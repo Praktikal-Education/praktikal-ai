@@ -1,7 +1,7 @@
 services:
   ollama:
     volumes:
-      - ./ollama:/root/.ollama
+      - /app/data/ollama:/root/.ollama
     container_name: ollama
     tty: true
     restart: unless-stopped
@@ -22,7 +22,7 @@ services:
       dockerfile: Dockerfile
     container_name: open-webui
     volumes:
-      - ./open_webui:/app/backend/data
+      - /app/data/open_webui:/app/backend/data
     depends_on:
       - ollama
     ports:
