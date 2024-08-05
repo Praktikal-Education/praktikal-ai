@@ -1,0 +1,43 @@
+services:
+  ollama:
+    volumes:
+      - ./ollama:/root/.ollama
+    container_name: ollama
+    tty: true
+    restart: unless-stopped
+    image: ollama/ollama:${OLLAMA_DOCKER_TAG-latest}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities:
+                - gpu
+  open-webui:
+    build:
+      context: .
+      args:
+        OLLAMA_BASE_URL: '/ollama'
+      dockerfile: Dockerfile
+    container_name: open-webui
+    volumes:
+      - ./open_webui:/app/backend/data
+    depends_on:
+      - ollama
+    ports:
+      - ${OPEN_WEBUI_PORT-3000}:8080
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - WEBUI_SECRET_KEY=pD1nvEHtCv3svw9N8xW8LRB1owh74mAWfN5a
+      - WEBUI_NAME=Praktikal AI
+      - WEBUI_URL="https://ai.praktikal.cloud"
+      - ENABLE_OAUTH_SIGNUP=true
+      - OAUTH_CLIENT_ID=openwebui
+      - OAUTH_CLIENT_SECRET=WMijvHHMAEYknUtkhkPgdJwfJFsvYyOX
+      - OPENID_PROVIDER_URL=https://id.praktikal.cloud/realms/client/.well-known/openid-configuration
+      - OAUTH_PROVIDER_NAME=Prakitkal ID
+      - ENABLE_LOGIN_FORM=false
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: unless-stopped

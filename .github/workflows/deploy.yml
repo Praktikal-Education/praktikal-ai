@@ -1,0 +1,23 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Copy all files to /home/app
+      run: |
+        rsync -av --delete ./ /home/app/
+
+    - name: Build and Deploy with Docker Compose
+      run: |
+        cd /home/app
+        docker compose build
+        docker compose up -d --force-recreate
