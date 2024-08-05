@@ -37,7 +37,8 @@ services:
       - OAUTH_CLIENT_SECRET=WMijvHHMAEYknUtkhkPgdJwfJFsvYyOX
       - OPENID_PROVIDER_URL=https://id.praktikal.cloud/realms/client/.well-known/openid-configuration
       - OAUTH_PROVIDER_NAME=Prakitkal ID
-      - ENABLE_LOGIN_FORM=false
+      - ENABLE_LOGIN_FORM=true
+      - OAUTH_MERGE_ACCOUNTS_BY_EMAIL=true
     extra_hosts:
       - host.docker.internal:host-gateway
     restart: unless-stopped
